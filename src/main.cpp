@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
-char ssid[] = "yourSSID";
-char password[] = "yourPassword";
+char ssid[] = "AirPort Extreme";
+char password[] = "Virginpiece";
 
 // Current time
 unsigned long currentTime = millis();
@@ -19,6 +19,7 @@ WiFiServer server(80);
 String header;
 
 String outputLEDState = "off";
+String isFlashing = "no";
 
 
 WiFiClientSecure client;
@@ -51,7 +52,30 @@ void setup() {
 
   pinMode(LED_BUILTIN, OUTPUT);
 
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(LED_BUILTIN, HIGH);
+}
+
+void blink(int interval){
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  delay(interval);
 }
 
 void loop(){
@@ -88,6 +112,12 @@ void loop(){
               Serial.println("LED off");
               outputLEDState = "off";
               digitalWrite(LED_BUILTIN, HIGH);
+            } else if (header.indexOf("GET /LED/flash") >= 0) {\
+              Serial.println("LED flashing");
+              isFlashing = "yes";
+              blink(100);
+              isFlashing = "no";
+
             }
             
             // Display the HTML web page
@@ -106,12 +136,20 @@ void loop(){
             
             // Display current state, and ON/OFF buttons for Built in LED
             client.println("<p>Built in LED State: " + outputLEDState + "</p>");
-            // If the output5State is off, it displays the ON button       
+            // client.println("<p>LED flashing? " + isFlashing + "</p>");
+            // If the LED is off, it displays the ON button       
             if (outputLEDState=="off") {
               client.println("<p><a href=\"/LED/on\"><button class=\"button\">ON</button></a></p>");
             } else {
               client.println("<p><a href=\"/LED/off\"><button class=\"button button2\">OFF</button></a></p>");
             } 
+
+            if(isFlashing=="no") {
+              client.println("<p><a href=\"/LED/flash\"><button class=\"button\">FLASH</button></a></p>");
+            } else {
+              client.println("<p><button class=\"button2\">WAIT</button></p>");
+            }
+
             client.println("</body></html>");
             
             // The HTTP response ends with another blank line
