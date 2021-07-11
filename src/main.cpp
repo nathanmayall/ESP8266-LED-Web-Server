@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
-char ssid[] = "AirPort Extreme";
-char password[] = "Virginpiece";
+char ssid[] = "....";
+char password[] = "....";
 
 // Current time
 unsigned long currentTime = millis();
